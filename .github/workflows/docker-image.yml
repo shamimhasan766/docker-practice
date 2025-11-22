@@ -1,0 +1,41 @@
+name: Build and push react app to Docker Hub
+
+on:
+  push:
+  branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: install dependencies
+        run: npm install
+
+      - name: build react app
+        run: npm run build
+
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+        username: shamimhasan76
+        password: dckr_pat_ilu48hiYIdwMZXeScDouGLG055g
+
+      - name: Build and Push docker image
+        uses: docker/build-push-action@v-6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: shamimhasan76/docker-practice:latest
